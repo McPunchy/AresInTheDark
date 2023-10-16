@@ -4,7 +4,7 @@ module AresMUSH
     class RollCmd
       include CommandHandler
       
-      attr_accessor :name, :roll_str, :private_roll, :fortune_roll, :information_roll, :downtime_roll
+      attr_accessor :name, :roll_str, :private_roll, :fortune_roll, :information_roll, :downtime_roll, :controlled_roll, :risky_roll, :desperate_roll 
 
       def parse_args
         if (cmd.args =~ /\//)
@@ -19,6 +19,9 @@ module AresMUSH
         self.fortune_roll = cmd.switch_is?("fortune")
         self.information_roll = cmd.switch_is?("information")
         self.downtime_roll = cmd.switch_is?("downtime")
+        self.controlled_roll = cmd.switch_is?("controlled")
+        self.risky_roll = cmd.switch_is?("risky")
+        self.desperate_roll = cmd.switch_is?("desperate")
       end
       
       def required_args
@@ -72,13 +75,30 @@ module AresMUSH
          :dice => FS3Skills.print_dice(die_result),
          :success => success_title
          )
+       elsif controlled_roll
+          message += t('fs3skills.controlled_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
+          )
+        elsif risky_roll
+          message += t('fs3skills.risky_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
+          )
+        elsif desperate_roll
+          message += t('fs3skills.desperate_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
+          )
         else
-         message += t('fs3skills.simple_roll_result',
-         :name => char ? char.name : "#{self.name} (#{enactor_name})",
-         :roll => self.roll_str,
-         :dice => FS3Skills.print_dice(die_result),
-         :success => success_title
-         )
+          client.emit_failure t('fs3skills.roll_type_not_specified')
+          return
         end
         FS3Skills.emit_results message, client, enactor_room, self.private_roll
       end
