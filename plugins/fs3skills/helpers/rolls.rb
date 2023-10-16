@@ -1,6 +1,6 @@
 module AresMUSH
   module FS3Skills
-    
+    @nodice = false
     def self.success_target_number
       6
     end
@@ -28,18 +28,30 @@ module AresMUSH
         # Hey if they're rolling this many dice they ought to succeed spectacularly.
         return [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
       end
-      
-      dice = [dice, 1].max.ceil
-      dice.times.collect { 1 + rand(6) }
+      @nodice = false
+      if dice == 0
+        @nodice = true
+        [1 + rand(6), 1 + rand(6)]
+      else
+        dice.times.collect { 1 + rand(6) }
+      end
     end
     
     # Changed to define successes by highest die, not total successes. Complications added.
     def self.get_success_level(die_result)
-      highest_die = die_result.max
-      successes = die_result.count { |d| d >= FS3Skills.success_target_number }
-      return successes if (successes > 0)
-      return 0 if (successes == 0) and (highest_die >= FS3Skills.complication_target_number )
-      return -1
+      if @nodice
+        highest_die = die_result.min
+        successes = die_result.count {highest_die >= FS3Skills.success_target_number }
+        return successes if (successes > 0)
+        return 0 if (successes == 0) and (highest_die >= FS3Skills.complication_target_number )
+        return -1
+      else
+        highest_die = die_result.max
+        successes = die_result.count { |d| d >= FS3Skills.success_target_number }
+        return successes if (successes > 0)
+        return 0 if (successes == 0) and (highest_die >= FS3Skills.complication_target_number )
+        return -1
+      end
     end
 
 

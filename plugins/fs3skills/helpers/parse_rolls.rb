@@ -15,16 +15,20 @@ module AresMUSH
       
       # Language and advantage doubles dice
       if (ability_type == :language || ability_type == :advantage)
-        skill_rating = skill_rating * 2
+        skill_rating = skill_rating * 1
       # Background doubles dice, but an untrained one defaults to everyman (1)
       elsif (ability_type == :background)
-        skill_rating = skill_rating == 0 ? 1 : skill_rating * 2
+        skill_rating = skill_rating == 0 ? 1 : skill_rating * 1
       elsif (ability_type == :attribute && !linked_attr)
-        skill_rating = 1
+        skill_rating = 0
         linked_attr = ability
       end
       
-      apt_rating = linked_attr ? FS3Skills.ability_rating(char, linked_attr) : 0
+      if ability_type == :attribute
+        apt_rating = linked_attr ? FS3Skills.ability_rating(char, linked_attr) : 0
+      else
+        apt_rating = 0
+      end
       
       dice = skill_rating + apt_rating + modifier
       Global.logger.debug "#{char.name} rolling #{ability} mod=#{modifier} skill=#{skill_rating} linked_attr=#{linked_attr} apt=#{apt_rating}"

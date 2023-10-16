@@ -2,8 +2,14 @@ module AresMUSH
   module FS3Skills
     
     def self.print_dice(dice)
-      dice.sort.reverse.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
+      nodice =FS3Skills.instance_variable_get(:@nodice)
+      if (nodice)
+        dice.sort.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
+      else
+        dice.sort.reverse.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
+      end
     end
+
     
     
     def self.get_success_title(success_level)
