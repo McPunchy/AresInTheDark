@@ -33,16 +33,13 @@ module AresMUSH
       dice.times.collect { 1 + rand(6) }
     end
     
-    # Determines the success level based on the raw die result.
-    # Either:  0 for failure, -1 for a botch (embarrassing failure), or
-    #    the number of successes.
+    # Changed to define successes by highest die, not total successes. Complications added.
     def self.get_success_level(die_result)
       highest_die = die_result.max
       successes = die_result.count { |d| d >= FS3Skills.success_target_number }
       return successes if (successes > 0)
       return 0 if (successes == 0) and (highest_die >= FS3Skills.complication_target_number )
       return -1
-
     end
 
 

@@ -51,8 +51,8 @@ en:
         reset_attributes: "Setting attributes to default values."
         
         # Rolls
-        embarrassing_failure: "%xRFailure!%xn"
-        failure: "%xrComplication!%xn"
+        embarrassing_failure: "%xrFailure!%xn"
+        failure: "%x172Complication!%xn"
         success: "%xgSuccess!%xn"
         good_success: "%xh%xgGood Success%xn"
         great_success: "%xh%xGGreat Success%xn"
