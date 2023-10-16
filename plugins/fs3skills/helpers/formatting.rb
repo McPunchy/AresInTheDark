@@ -2,7 +2,7 @@ module AresMUSH
   module FS3Skills
     
     def self.print_dice(dice)
-      dice.sort.reverse.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : d}.join(" ")
+      dice.sort.reverse.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
     end
     
     
@@ -12,13 +12,9 @@ module AresMUSH
         t('fs3skills.embarrassing_failure')
       when 0
         t('fs3skills.failure')
-      when 1, 2
+      when 1
         t('fs3skills.success')
-      when 3, 4
-        t('fs3skills.good_success')
-      when 5, 6
-        t('fs3skills.great_success')
-      when 7..99
+      when 2..99
         t('fs3skills.amazing_success')
       else
         raise "Unexpected roll result: #{success_level}"

@@ -4,6 +4,9 @@ module AresMUSH
     def self.success_target_number
       6
     end
+    def self.complication_target_number
+      4
+    end
     
     # Makes an ability roll and returns the raw dice results.
     # Good for when you're doing a regular roll because you can show the raw dice and
@@ -27,20 +30,21 @@ module AresMUSH
       end
       
       dice = [dice, 1].max.ceil
-      dice.times.collect { 1 + rand(8) }
+      dice.times.collect { 1 + rand(6) }
     end
     
     # Determines the success level based on the raw die result.
     # Either:  0 for failure, -1 for a botch (embarrassing failure), or
     #    the number of successes.
     def self.get_success_level(die_result)
+      highest_die = die_result.max
       successes = die_result.count { |d| d >= FS3Skills.success_target_number }
-      botches = die_result.count { |d| d == 1 }
       return successes if (successes > 0)
-      return -1 if (botches > die_result.count / 2)
-      return 0
+      return 0 if (successes == 0) and (highest_die >= FS3Skills.complication_target_number )
+      return -1
+
     end
-    
+
 
     def self.emit_results(message, client, room, is_private)
       if (is_private)
