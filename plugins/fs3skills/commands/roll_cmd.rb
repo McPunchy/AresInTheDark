@@ -55,25 +55,25 @@ module AresMUSH
        end
 
        if fortune_roll
-         message += t('fs3skills.fortune_roll_result',
-         :name => char ? char.name : "#{self.name} (#{enactor_name})",
-         :roll => self.roll_str,
-         :dice => FS3Skills.print_dice(die_result),
-         :success => success_title
+          message += t('fs3skills.fortune_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
          )
        elsif information_roll
-         message += t('fs3skills.information_roll_result',
-         :name => char ? char.name : "#{self.name} (#{enactor_name})",
-         :roll => self.roll_str,
-         :dice => FS3Skills.print_dice(die_result),
-         :success => success_title
+          message += t('fs3skills.information_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
          )
        elsif downtime_roll
-         message += t('fs3skills.downtime_roll_result',
-         :name => char ? char.name : "#{self.name} (#{enactor_name})",
-         :roll => self.roll_str,
-         :dice => FS3Skills.print_dice(die_result),
-         :success => success_title
+          message += t('fs3skills.downtime_roll_result',
+          :name => char ? char.name : "#{self.name} (#{enactor_name})",
+          :roll => self.roll_str,
+          :dice => FS3Skills.print_dice(die_result),
+          :success => success_title
          )
        elsif controlled_roll
           message += t('fs3skills.controlled_roll_result',
@@ -81,25 +81,25 @@ module AresMUSH
           :roll => self.roll_str,
           :dice => FS3Skills.print_dice(die_result),
           :success => success_title
-          )
-        elsif risky_roll
+         )
+       elsif risky_roll
           message += t('fs3skills.risky_roll_result',
           :name => char ? char.name : "#{self.name} (#{enactor_name})",
           :roll => self.roll_str,
           :dice => FS3Skills.print_dice(die_result),
           :success => success_title
-          )
-        elsif desperate_roll
+         )
+       elsif desperate_roll
           message += t('fs3skills.desperate_roll_result',
           :name => char ? char.name : "#{self.name} (#{enactor_name})",
           :roll => self.roll_str,
           :dice => FS3Skills.print_dice(die_result),
           :success => success_title
-          )
-        else
+         )
+       else
           client.emit_failure t('fs3skills.roll_type_not_specified')
           return
-        end
+       end
         FS3Skills.emit_results message, client, enactor_room, self.private_roll
       end
     end

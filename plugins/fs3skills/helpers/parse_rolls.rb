@@ -13,10 +13,10 @@ module AresMUSH
       ability_type = FS3Skills.get_ability_type(ability)
       skill_rating = FS3Skills.ability_rating(char, ability)
       
-      # Language and advantage doubles dice
+      # Language and advantage shouldn't be rolled, but can be to avoid problems. One dice per dot.
       if (ability_type == :language || ability_type == :advantage)
         skill_rating = skill_rating * 1
-      # Background doubles dice, but an untrained one defaults to everyman (1)
+      # Backgrounds should not be rolled but can at one dice per dot. Unknown skills give 0 dice.
       elsif (ability_type == :background)
         skill_rating = skill_rating == 0 ? 1 : skill_rating * 1
       elsif (ability_type == :attribute && !linked_attr)
@@ -38,10 +38,10 @@ module AresMUSH
     
     
     # Takes a roll string, like Athletics+Body+2, or just Athletics, parses it to figure
-    # out the pieces, and then makes the roll.
+    # out the pieces, and then makes the roll. No +2 bonuses or anything like that.
     def self.parse_and_roll(char, roll_str)
       if (roll_str.is_integer?)
-        dice = (roll_str.to_i) + 2
+        dice = (roll_str.to_i) + 0
         die_result = FS3Skills.roll_dice(dice)
       else
         roll_params = FS3Skills.parse_roll_params roll_str
