@@ -144,25 +144,25 @@ module AresMUSH
         roll_position = ""
         roll_effect = ""
         roll_type = ""
-        if controlled_roll
+        if (controlled_roll == 'true')
           roll_position = "controlled"
-        elsif risky_roll
+        elsif (risky_roll == 'true')
           roll_position = "risky"
-        elsif desperate_roll
+        elsif (desperate_roll == 'true')
           roll_position = "desperate"
         end
-        if standard_effect
+        if (standard_effect == 'true')
           roll_effect = "standard"
-        elsif great_effect
+        elsif (great_effect == 'true')
           roll_effect = "great"
-        elsif limited_effect
+        elsif (limited_effect == 'true')
           roll_effect = "limited"
         end
-        if fortune_roll
+        if (fortune_roll == 'true')
           roll_type = "fortune"
-        elsif information_roll
+        elsif (information_roll == 'true')
           roll_type = "information"
-        elsif downtime_roll
+        elsif (downtime_roll == 'true')
           roll_type = "downtime"
         end        
         roll = FS3Skills.parse_and_roll(char, pc_skill)
