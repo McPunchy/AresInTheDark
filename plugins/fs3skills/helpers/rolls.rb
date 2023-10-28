@@ -86,6 +86,9 @@ module AresMUSH
       risky_roll = request.args[:risky_roll] || false
       controlled_roll = request.args[:controlled_roll] || false
       desperate_roll = request.args[:desperate_roll] || false
+      limited_effect = request.args[:limited_effect] || false
+      standard_effect = request.args[:standard_effect] || false
+      great_effect = request.args[:great_effect] || false
       fortune_roll = request.args[:fortune_roll] || false
       information_roll = request.args[:information_roll] || false
       downtime_roll = request.args[:downtime_roll] || false
@@ -138,7 +141,30 @@ module AresMUSH
         if (!char && !pc_skill.is_integer?)
           pc_skill = "3"
         end
-
+        roll_position = ""
+        roll_effect = ""
+        roll_type = ""
+        if controlled_roll
+          roll_position = "controlled"
+        elsif risky_roll
+          roll_position = "risky"
+        elsif desperate_roll
+          roll_position = "desperate"
+        end
+        if standard_effect
+          roll_effect = "standard"
+        elsif great_effect
+          roll_effect = "great"
+        elsif limited_effect
+          roll_effect = "limited"
+        end
+        if fortune_roll
+          roll_type = "fortune"
+        elsif information_roll
+          roll_type = "information"
+        elsif downtime_roll
+          roll_type = "downtime"
+        end        
         roll = FS3Skills.parse_and_roll(char, pc_skill)
         roll_result = FS3Skills.get_success_level(roll)
         success_title = FS3Skills.get_success_title(roll_result)
@@ -150,55 +176,59 @@ module AresMUSH
          message += t('fs3skills.nodice_roll_prefix')
         end
 
-        if (fortune_roll == 'true')
-         message += t('fs3skills.fortune_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
+        if roll_type.present? && !roll_type.empty?
+          message += t('fs3skills.other_roll_result',
+          :name => char ? char.name : "#{pc_name} (#{enactor.name})",
+          :roll => pc_skill,
+          :dice => FS3Skills.print_dice(roll),
+          :success => success_title,
+          :type => roll_type
          )
-        elsif (information_roll == 'true')
-         message += t('fs3skills.information_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
-         )
-        elsif (downtime_roll == 'true')
-         message += t('fs3skills.downtime_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
-         )
-        elsif (controlled_roll == 'true')
-         message += t('fs3skills.controlled_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
-         )
-        elsif (risky_roll == 'true')
-         message += t('fs3skills.risky_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
-         )
-        elsif (desperate_roll == 'true')
-         message += t('fs3skills.desperate_roll_result',
-         :name => char ? char.name : "#{pc_name} (#{enactor.name})",
-         :roll => pc_skill,
-         :dice => FS3Skills.print_dice(roll),
-         :success => success_title
-         )
+        else roll_position.present? && !roll_position.empty?
+          message += t("fs3skills.action_roll_result",
+            :name => char ? char.name : "#{pc_name} (#{enactor.name})",
+            :roll => pc_skill,
+            :dice => FS3Skills.print_dice(roll),
+            :success => success_title,
+            :position => roll_position,
+            :effect => roll_effect
+          )
        end
           
       # ------------------
       # SELF ROLL
-      # ------------------
-      
+      # ------------------      
       else
+        roll_position = ""
+        roll_effect = ""
+        roll_type = ""
+        if (controlled_roll == 'true')
+          roll_position = "controlled"
+        elsif (risky_roll == 'true')
+          roll_position = "risky"
+        elsif (desperate_roll == 'true')
+          roll_position = "desperate"
+        else
+          roll_position = ""
+        end
+        if (standard_effect == 'true')
+          roll_effect = "standard"
+        elsif (great_effect == 'true')
+          roll_effect = "great"
+        elsif (limited_effect == 'true')
+          roll_effect = "limited"
+        else
+          roll_effect = ""
+        end
+        if (information_roll == 'true')
+          roll_type = "information"
+        elsif (fortune_roll == 'true')
+          roll_type = "fortune"
+        elsif (downtime_roll == 'true')
+          roll_type = "downtime"
+        else
+          roll_type = ""
+        end        
         roll = FS3Skills.parse_and_roll(enactor, roll_str)
         roll_result = FS3Skills.get_success_level(roll)
         success_title = FS3Skills.get_success_title(roll_result)
@@ -209,48 +239,23 @@ module AresMUSH
           message += t('fs3skills.nodice_roll_prefix')
         end
 
-        if (fortune_roll == 'true')
-          message += t('fs3skills.fortune_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
-        elsif (information_roll == 'true')
-          message += t('fs3skills.information_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
-        elsif (downtime_roll == 'true')
-          message += t('fs3skills.downtime_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
-        elsif (controlled_roll == 'true')
-          message += t('fs3skills.controlled_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
-        elsif (risky_roll == 'true')
-          message += t('fs3skills.risky_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
-        elsif (desperate_roll == 'true')
-          message += t('fs3skills.desperate_roll_result',
-          :name => enactor.name,
-          :roll => roll_str,
-          :dice => FS3Skills.print_dice(roll),
-          :success => success_title
-         )
+        if roll_position.present? && !roll_position.empty?
+          message += t("fs3skills.action_roll_result",
+            :name => enactor.name,
+            :roll => roll_str,
+            :dice => FS3Skills.print_dice(roll),
+            :success => success_title,
+            :position => roll_position,
+            :effect => roll_effect
+          )
+        elsif roll_type.present? && !roll_type.empty?
+          message += t('fs3skills.other_roll_result',
+            :name => enactor.name,
+            :roll => roll_str,
+            :dice => FS3Skills.print_dice(roll),
+            :success => success_title,
+            :type => roll_type
+          )
         end
       end
       

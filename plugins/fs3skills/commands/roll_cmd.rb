@@ -4,7 +4,7 @@ module AresMUSH
     class RollCmd
       include CommandHandler
       
-      attr_accessor :name, :roll_str, :private_roll, :fortune_roll, :information_roll, :downtime_roll, :controlled_roll, :risky_roll, :desperate_roll 
+      attr_accessor :name, :roll_str, :private_roll, :fortune_roll, :information_roll, :downtime_roll, :controlled_roll, :risky_roll, :desperate_roll, :standard_effect, :great_effect, :limited_effect
 
       def parse_args
         if (cmd.args =~ /\//)
@@ -15,14 +15,62 @@ module AresMUSH
           self.name = enactor_name        
           self.roll_str = titlecase_arg(cmd.args)
         end
-        self.private_roll = cmd.switch_is?("private")
-        self.fortune_roll = cmd.switch_is?("fortune")
-        self.information_roll = cmd.switch_is?("information")
-        self.downtime_roll = cmd.switch_is?("downtime")
-        self.controlled_roll = cmd.switch_is?("controlled")
-        self.risky_roll = cmd.switch_is?("risky")
-        self.desperate_roll = cmd.switch_is?("desperate")
+      
+        # The most haphazard way to parse switches ever
+        if cmd.switch.nil?
+          client.emit_failure t('fs3skills.roll_type_not_specified')
+          return
+        end
+        switches = cmd.switch.split("/")
+        switch_counts = {
+          "private" => 0,
+          "fortune" => 0,
+          "information" => 0,
+          "downtime" => 0,
+          "controlled" => 0,
+          "risky" => 0,
+          "desperate" => 0,
+          "standard" => 0,
+          "great" => 0,
+          "limited" => 0
+        }
+        if switches.empty?
+          client.emit_failure t('fs3skills.roll_type_not_specified')
+          return
+        end
+        switches.each do |switch|
+          switch_counts[switch] += 1
+        end
+        if switch_counts["controlled"] + switch_counts["risky"] + switch_counts["desperate"] > 1
+          client.emit_failure t('fs3skills.one_roll_position')
+          return
+        end
+        if (switch_counts["controlled"] + switch_counts["risky"] + switch_counts["desperate"] > 0) && (switch_counts["standard"] + switch_counts["great"] + switch_counts["limited"] == 0)
+          client.emit_failure t('fs3skills.effect_not_specified')
+          return
+        end
+        if switch_counts["fortune"] + switch_counts["information"] + switch_counts["downtime"] > 1
+          client.emit_failure t('fs3skills.only_one_roll_type')
+          return
+        end
+        if (switch_counts["controlled"] + switch_counts["risky"] + switch_counts["desperate"] > 0) && (switch_counts["fortune"] + switch_counts["information"] + switch_counts["downtime"] > 0)
+          client.emit_failure t('fs3skills.not_both_roll_types')
+          return
+        end
+
+        # oh right I should define these switches
+        self.private_roll = switches.include?("private")
+        self.fortune_roll = switches.include?("fortune")
+        self.information_roll = switches.include?("information")
+        self.downtime_roll = switches.include?("downtime")
+        self.controlled_roll = switches.include?("controlled")
+        self.risky_roll = switches.include?("risky")
+        self.desperate_roll = switches.include?("desperate")
+        self.standard_effect = switches.include?("standard")
+        self.great_effect = switches.include?("great")
+        self.limited_effect = switches.include?("limited")
       end
+          
       
       def required_args
         [ self.name, self.roll_str ]
@@ -43,7 +91,31 @@ module AresMUSH
           client.emit_failure t('fs3skills.unknown_roll_params')
           return
         end
-      
+        # experiment to see if I can at least shrink down message amounts here.
+        roll_position = ""
+        roll_effect = ""
+        roll_type = ""
+        if controlled_roll
+          roll_position = "controlled"
+        elsif risky_roll
+          roll_position = "risky"
+        elsif desperate_roll
+          roll_position = "desperate"
+        end
+        if standard_effect
+          roll_effect = "standard"
+        elsif great_effect
+          roll_effect = "great"
+        elsif limited_effect
+          roll_effect = "limited"
+        end
+        if fortune_roll
+          roll_type = "fortune"
+        elsif information_roll
+          roll_type = "information"
+        elsif downtime_roll
+          roll_type = "downtime"
+        end
         success_level = FS3Skills.get_success_level(die_result)
         success_title = FS3Skills.get_success_title(success_level)
         nodice =FS3Skills.instance_variable_get(:@nodice)
@@ -54,50 +126,25 @@ module AresMUSH
          message += t('fs3skills.nodice_roll_prefix')
        end
 
-       if fortune_roll
-          message += t('fs3skills.fortune_roll_result',
+       if roll_type.present?
+          message += t('fs3skills.other_roll_result',
           :name => char ? char.name : "#{self.name} (#{enactor_name})",
           :roll => self.roll_str,
           :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
+          :success => success_title,
+          :type => roll_type,
          )
-       elsif information_roll
-          message += t('fs3skills.information_roll_result',
-          :name => char ? char.name : "#{self.name} (#{enactor_name})",
-          :roll => self.roll_str,
-          :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
-         )
-       elsif downtime_roll
-          message += t('fs3skills.downtime_roll_result',
-          :name => char ? char.name : "#{self.name} (#{enactor_name})",
-          :roll => self.roll_str,
-          :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
-         )
-       elsif controlled_roll
-          message += t('fs3skills.controlled_roll_result',
-          :name => char ? char.name : "#{self.name} (#{enactor_name})",
-          :roll => self.roll_str,
-          :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
-         )
-       elsif risky_roll
-          message += t('fs3skills.risky_roll_result',
-          :name => char ? char.name : "#{self.name} (#{enactor_name})",
-          :roll => self.roll_str,
-          :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
-         )
-       elsif desperate_roll
-          message += t('fs3skills.desperate_roll_result',
-          :name => char ? char.name : "#{self.name} (#{enactor_name})",
-          :roll => self.roll_str,
-          :dice => FS3Skills.print_dice(die_result),
-          :success => success_title
-         )
-       else
-          client.emit_failure t('fs3skills.roll_type_not_specified')
+       elsif roll_position.present?
+          message += t("fs3skills.action_roll_result",
+            :name => char ? char.name : "#{self.name} (#{enactor_name})",
+            :roll => self.roll_str,
+            :dice => FS3Skills.print_dice(die_result),
+            :success => success_title,
+            :position => roll_position,
+            :effect => roll_effect,
+          )
+        else
+          client.emit_failure t('fs3skills.roll_type_not_specified1')
           return
        end
         FS3Skills.emit_results message, client, enactor_room, self.private_roll
