@@ -3,23 +3,21 @@ module AresMUSH
     class LuckSpendCmd
       include CommandHandler
       
-      attr_accessor :reason
+      attr_accessor :reason, :num_points
 
       def parse_args
-        self.reason = trim_arg(cmd.args)
+        args = cmd.parse_args(ArgParser.arg1_equals_optional_arg2)
+        self.reason = trim_arg(args.arg1)
+        self.num_points = args.arg2 ? Integer(args.arg2) : 1
       end
 
       def required_args
         [ self.reason ]
       end
       
-      def check_luck
-        return t('fs3skills.not_enough_points') if enactor.luck < 1
-        return nil
-      end
       
       def handle
-        FS3Skills.spend_luck(enactor, self.reason, enactor_room.scene)
+        FS3Skills.spend_luck(enactor, self.reason, enactor_room.scene, self.num_points)
       end
     end
   end

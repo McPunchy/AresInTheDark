@@ -52,7 +52,7 @@ en:
         
         # Rolls
         embarrassing_failure: "%xrFailure!%xn"
-        failure: "%x172Complication!%xn"
+        failure: "%x172Partial Success!%xn"
         success: "%xgSuccess!%xn"
         good_success: "%xh%xgGood Success%xn"
         great_success: "%xh%xGGreat Success%xn"
@@ -106,8 +106,10 @@ en:
         #luck_point_spent: 
         #    one: "%{name} spends a luck point!"
         #    other: "%{name} spends %{count} luck points!"
-        luck_point_spent: "%{name} spends a luck point on %{reason}."
+        luck_point_spent: "%{name} spends %{count} luck to %{reason}."
+        luck_point_spent_with_overlap: "%{name} spends %{count} luck to %{reason}. They spent %{overlap} more luck than they had! Trauma gained!"
         luck_job_title: "Luck Spent - %{name}"
+        trauma_job_title: "Trauma Gained - %{name}"
             
         # ------------------------------------------------------
         # SHEET

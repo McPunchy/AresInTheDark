@@ -12,9 +12,22 @@ module AresMUSH
       char.update(fs3_luck: luck)
     end
     
-    def self.spend_luck(char, reason, scene)
-      char.spend_luck(1)
-      message = t('fs3skills.luck_point_spent', :name => char.name, :reason => reason)
+    def self.spend_luck(char, reason, scene, num_points = 1)
+      num_points = num_points.to_i
+      max_luck = Global.read_config("fs3skills", "max_luck")
+      overlap = 0
+      if num_points > char.luck
+        overlap = num_points - char.luck
+        char.update(fs3_luck: max_luck - overlap)
+      else
+        char.spend_luck(num_points)
+      end
+  
+      if overlap > 0
+       message = t('fs3skills.luck_point_spent_with_overlap', :name => char.name, :reason => reason, :count => num_points, :overlap => overlap)
+      else
+       message = t('fs3skills.luck_point_spent', :name => char.name, :reason => reason, :count => num_points)
+      end
 
       if (scene)
         scene.room.emit_ooc message
@@ -32,8 +45,14 @@ module AresMUSH
           Jobs.close_job(Game.master.system_character, status[:job])
         end
       end
+
+
+      if overlap > 0
+        category = Jobs.system_category
+        status = Jobs.create_job(category, t('fs3skills.trauma_job_title', :name => char.name), message, Game.master.system_character)
+      end
       
-      Global.logger.info "#{char.name} spent luck on #{reason}."
+      Global.logger.info "#{char.name} spent #{num_points} luck on #{reason}."
     end
   end
 end
