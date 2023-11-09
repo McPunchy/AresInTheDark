@@ -34,6 +34,13 @@ module AresMUSH
           client.emit_failure error
         else
           client.emit_success FS3Skills.ability_raised_text(enactor, self.name)
+
+          # If the ability is an action skill, update the rating of the linked attribute
+          ability_type = FS3Skills.get_ability_type(self.name)
+          if ability_type == :action
+             linked_attr = FS3Skills.get_linked_attr(self.name)
+             FS3Skills.update_attribute_rating(enactor, linked_attr)
+           end
         end
       end
     end

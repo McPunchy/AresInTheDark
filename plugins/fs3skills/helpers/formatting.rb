@@ -2,11 +2,11 @@ module AresMUSH
   module FS3Skills
     
     def self.print_dice(dice)
-      nodice =FS3Skills.instance_variable_get(:@nodice)
+      nodice = FS3Skills.instance_variable_get(:@nodice)
       if (nodice)
-        dice.sort.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
+        dice.sort.map.with_index { |d, i| i == 0 ? (d >= FS3Skills.success_target_number ? "[%xg #{d}%xn]" : (d >= FS3Skills.complication_target_number ? "[%xy #{d}%xn]" : "[%xr #{d}%xn]")) : (d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : "%xr#{d}%xn")) }.join(" ")
       else
-        dice.sort.reverse.map { |d| d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : d) }.join(" ")
+        dice.sort.reverse.map.with_index { |d, i| i == 0 ? (d >= FS3Skills.success_target_number ? "[%xg #{d}%xn]" : (d >= FS3Skills.complication_target_number ? "[%xy #{d}%xn]" : "[%xr #{d}%xn]")) : (d >= FS3Skills.success_target_number ? "%xg#{d}%xn" : (d >= FS3Skills.complication_target_number ? "%xy#{d}%xn" : "%xr#{d}%xn")) }.join(" ")
       end
     end
 

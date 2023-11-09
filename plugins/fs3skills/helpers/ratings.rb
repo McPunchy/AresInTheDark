@@ -19,6 +19,8 @@ module AresMUSH
         nil
       end
     end
+
+  
     
     def self.get_linked_attr(ability_name)
       case FS3Skills.get_ability_type(ability_name)
@@ -30,6 +32,23 @@ module AresMUSH
       else
         return Global.read_config("fs3skills", "default_linked_attr")
       end
+    end
+
+    def self.update_attribute_rating(char, attribute_name)
+      # Get all action skills of the character
+      action_skills = char.fs3_action_skills
+    
+      # Filter skills linked to the attribute and with rating at least one
+      linked_skills = action_skills.select do |skill|
+        FS3Skills.get_linked_attr(skill.name) == attribute_name && skill.rating >= 1
+      end
+    
+      # Count unique skills
+      unique_skill_count = linked_skills.uniq.count
+    
+      # Find the attribute and update its rating
+      attribute = FS3Skills.find_ability(char, attribute_name)
+      attribute.update(rating: unique_skill_count) if attribute
     end
     
     def self.skills_census(skill_type)

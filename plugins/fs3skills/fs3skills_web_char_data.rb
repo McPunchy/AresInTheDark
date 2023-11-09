@@ -53,8 +53,11 @@ module AresMUSH
         end
       end
       
-      def get_ability_list(list, include_specs = false)        
-        list.to_a.sort_by { |a| a.name }.map { |a| 
+      def get_ability_list(list, include_specs = false)
+        list.to_a.sort_by { |a| 
+          linked_attr = include_specs ? FS3Skills.get_linked_attr(a.name)[0..2].upcase : nil
+          [linked_attr ? 0 : 1, linked_attr || a.name]
+        }.map { |a| 
           { 
             name: a.name, 
             rating: a.rating, 

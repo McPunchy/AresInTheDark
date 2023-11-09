@@ -41,9 +41,9 @@ module AresMUSH
       when 2
         return t('fs3skills.fair_rating')
       when 3
-        return t('fs3skills.competent_rating')
+        return t('fs3skills.exceptional_rating')
       when 4
-        return t('fs3skills.good_rating')
+        return t('fs3skills.legendary_rating')
       when 5
         return t('fs3skills.great_rating')
       when 6

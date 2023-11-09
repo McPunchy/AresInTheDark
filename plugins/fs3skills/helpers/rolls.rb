@@ -92,6 +92,12 @@ module AresMUSH
       fortune_roll = request.args[:fortune_roll] || false
       information_roll = request.args[:information_roll] || false
       downtime_roll = request.args[:downtime_roll] || false
+      push_roll = request.args[:push_roll] || false
+      resist_roll = request.args[:resist_roll] || false
+      devil_roll = request.args[:devil_roll] || false
+      groupaction_roll = request.args[:groupaction_roll] || false
+      assist_roll = request.args[:assist_roll] || false
+
       
       # ------------------
       # VS ROLL
@@ -164,6 +170,8 @@ module AresMUSH
           roll_type = "information"
         elsif (downtime_roll == 'true')
           roll_type = "downtime"
+        elsif (resist_roll == 'true')
+          roll_type = "resist"
         end        
         roll = FS3Skills.parse_and_roll(char, pc_skill)
         roll_result = FS3Skills.get_success_level(roll)
@@ -194,6 +202,23 @@ module AresMUSH
             :effect => roll_effect
           )
        end
+       
+       if push_roll == 'true'
+         message += " (Push used.)"
+       end
+      
+       if devil_roll == 'true'
+         message += " (Devil's Bargain Taken.)"
+       end
+      
+       if groupaction_roll == 'true'
+         message += " (Group Roll.)"
+       end
+      
+       if assist_roll == 'true'
+         message += " (Assisted.)"
+     end
+
           
       # ------------------
       # SELF ROLL
@@ -226,6 +251,8 @@ module AresMUSH
           roll_type = "fortune"
         elsif (downtime_roll == 'true')
           roll_type = "downtime"
+        elsif (resist_roll == 'true')
+          roll_type = "resist"
         else
           roll_type = ""
         end        
@@ -257,6 +284,23 @@ module AresMUSH
             :type => roll_type
           )
         end
+
+        if push_roll == 'true'
+          message += " (Push used.)"
+        end
+
+        if devil_roll == 'true'
+          message += " (Devil's Bargain Taken.)"
+        end
+
+        if groupaction_roll == 'true'
+          message += " (Group Roll.)"
+        end 
+
+        if assist_roll == 'true'
+          message += " (Assisted.)"
+        end
+
       end
       
       return { message: message }

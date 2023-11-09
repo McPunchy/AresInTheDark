@@ -92,6 +92,10 @@ module AresMUSH
         if (ability.learning_complete)
           ability.update(xp: 0, rating: ability.rating + 1)
           FS3Skills.create_xp_job(char, ability)
+          if ability_type == :action
+            linked_attr = FS3Skills.get_linked_attr(name)
+            FS3Skills.update_attribute_rating(char, linked_attr)
+          end
         end
         
       end 

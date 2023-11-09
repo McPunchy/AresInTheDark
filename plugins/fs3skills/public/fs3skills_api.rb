@@ -67,6 +67,7 @@ module AresMUSH
       ability = FS3Skills.find_ability(char, ability_name)
       ability ? ability.rating : 0
     end
+
     
     # Dice they roll, including related attribute
     def self.dice_rolled(char, ability)

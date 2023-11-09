@@ -31,7 +31,7 @@ module AresMUSH
           fs3_backgrounds: get_ability_list(char, char.fs3_background_skills, :background),
           fs3_languages: get_ability_list(char, char.fs3_languages, :language),
           fs3_advantages: get_ability_list(char, char.fs3_advantages, :advantage),
-          reset_needed: !char.fs3_attributes.map { |a| a.rating > 1 }.any?,
+          reset_needed: !char.fs3_action_skills.map { |a| a.rating > 1 }.any?,
           use_advantages: FS3Skills.use_advantages?
         } 
       end
@@ -41,11 +41,11 @@ module AresMUSH
         case ability_type
         when :attribute
           metadata = FS3Skills.attrs
-          starting_rating = 1
+          starting_rating = 0
           starting_rating_name = t('fs3skills.poor_rating')
         when :action
           metadata = FS3Skills.action_skills
-          starting_rating = 1
+          starting_rating = 0
           starting_rating_name = t('fs3skills.everyman_rating')
         when :language
           metadata = FS3Skills.languages

@@ -60,8 +60,9 @@ module AresMUSH
            :dice1 => FS3Skills.print_dice(die_result1),
            :dice2 => FS3Skills.print_dice(die_result2),
            :result => results)  
-          
-        FS3Skills.emit_results message, client, enactor_room, self.private_roll
+          #We don't use opposed rolls, but we'll still let them process to avoid complaints.
+     #   FS3Skills.emit_results message, client, enactor_room, self.private_roll
+        client.emit_failure "Opposed rolls are not used in this game."
       end
     end
   end

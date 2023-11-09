@@ -28,7 +28,13 @@ module AresMUSH
         when :attribute
           ability = FS3Attribute.create(character: char, name: ability_name, rating: rating)
         end
+        if ability_type == :action
+          linked_attr = FS3Skills.get_linked_attr(ability_name)
+          FS3Skills.update_attribute_rating(char, linked_attr)
+        end
       end
+      
+
       
       rating_name = ability.rating_name
       
@@ -67,8 +73,9 @@ module AresMUSH
         end
       when :background, :language, :advantage
         min_rating = 0
+      ## Attributes are resistance rolls only and can now have 0 dice.  
       when :attribute
-        min_rating = 1
+        min_rating = 0
       end
       min_rating
     end
