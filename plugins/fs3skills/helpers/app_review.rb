@@ -75,9 +75,9 @@ module AresMUSH
     end
     
     def self.check_action_points(char)
-      total_skills = char.fs3_action_skills.count
-      max_skills = 7
-      total_skills > max_skills ? t('fs3skills.too_many_action_skills', :max => max_skills) : nil
+      total_skill_rating = char.fs3_action_skills.sum(&:rating)
+      max = Global.read_config("fs3skills", "max_action_skills") 
+      total_skill_rating > max ? t('fs3skills.too_many_action_skills', :max => max) : nil
     end
     
     def self.check_advantage_points(char)

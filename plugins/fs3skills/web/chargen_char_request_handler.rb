@@ -60,13 +60,14 @@ module AresMUSH
         end
         
         abilities = list.to_a.sort_by { |a| a.name }.map { |a| 
-          { 
-            name: a.name, 
-            rating: a.rating, 
-            rating_name: a.rating_name,
-            desc: (metadata) ? FS3Skills.get_ability_desc(metadata, a.name) : nil,
-            specialties: (metadata) ? build_specialty_list(char, metadata, a.name) : nil
-          }}
+           { 
+               name: a.name, 
+               rating: a.rating, 
+               rating_name: a.rating_name,
+                desc: (metadata) ? FS3Skills.get_ability_desc(metadata, a.name) : nil,
+                specialties: (metadata) ? build_specialty_list(char, metadata, a.name) : nil,
+                linked_attr: FS3Skills.get_linked_attr(a.name)
+         }}
           
           if (metadata)
             metadata.each do |m|

@@ -13,6 +13,7 @@ module AresMUSH
           min_action_skill_rating: Global.read_config('fs3skills', 'allow_incapable_action_skills') ? 0 : 1,
           max_skill_rating: Global.read_config('fs3skills', 'max_skill_rating'),
           max_attr_rating: Global.read_config('fs3skills', 'max_attr_rating'),
+          max_action_skill_number: Global.read_config('fs3skills', 'max_action_skills'),
           min_backgrounds: Global.read_config('fs3skills', 'min_backgrounds'),
           free_languages:  Global.read_config('fs3skills', 'free_languages'),
           free_backgrounds:  Global.read_config('fs3skills', 'free_backgrounds'),
