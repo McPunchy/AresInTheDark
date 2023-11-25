@@ -1,22 +1,39 @@
 <%= header %>
-<%= t('fs3combat.damage_title', :name => target.name) %>
-<%= t('fs3combat.damage_titlebar') %>
+<%= "Damage: #{target.name}" %>
+
+<%= "Damage Level 1" %>
 <% damage.each_with_index do |d, index| %>
-<%= left(index + 1, 3) -%>
-<%= left( d.ictime_str, 13 ) -%>
-<%= left( d.description, 27 ) -%>
-<%= left( severity(d), 19 ) -%>
-<%= center( treatable(d), 7 ) -%>
-<%= center( healing(d), 9) %>
+  <% if d.current_severity == 'FLESH' %>
+    <%= display_damage_entry(d, index) %>
+  <% end %>
 <% end %>
 
-%xh<%= t('fs3combat.wound_mod') %>%xn <%= wound_mod %>
+<%= "Damage Level 2" %>
+<% damage.each_with_index do |d, index| %>
+  <% if d.current_severity == 'IMPAIR' %>
+    <%= display_damage_entry(d, index) %>
+  <% end %>
+<% end %>
 
-%xh<%= t('fs3combat.healed_by_title')%>%xn <%= healed_by %>
+<%= "Damage Level 3" %>
+<% damage.each_with_index do |d, index| %>
+  <% if d.current_severity == 'INCAP' %>
+    <%= display_damage_entry(d, index) %>
+  <% end %>
+<% end %>
+
+<%= "Healed Wounds" %>
+<% damage.each_with_index do |d, index| %>
+  <% if d.current_severity == 'HEAL' %>
+    <%= display_damage_entry(d, index) %>
+  <% end %>
+<% end %>
+
+<%= "Healed By: #{healed_by}" %>
 <% if vehicle_notice %>
 
-%xh<%= vehicle_notice %>%xn
+<%= vehicle_notice %>
 <% end %>
 
-%xhSee https://aresmush.com/fs3/fs3-3/combat.html#damage for damage level descriptions.%xn
+<%= "See https://boroughs.aresmush.com/help/damage for damage level descriptions." %>
 <%= footer %>

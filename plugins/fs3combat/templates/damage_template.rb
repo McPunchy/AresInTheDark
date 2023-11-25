@@ -16,7 +16,15 @@ module AresMUSH
         current_sev = FS3Combat.display_severity(d.current_severity)
         "#{current_sev} (#{initial_sev[0..2]})"
       end
+
+      def display_damage_entry(d, index)
+        "#{left(index + 1, 3)} #{left(d.ictime_str, 13)} #{left(d.description, 27)} #{left(severity(d), 19)} #{center(treatable(d), 7)} #{center(healing(d), 9)}"
+      end
       
+      def section_line(text)
+        text
+      end
+
       def treatable(d)
         d.is_treatable? ? t('global.y') : '-'
       end   
